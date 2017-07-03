@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/jQuery.js" type="text/javascript">
+    </script>
+    <script src="js/vue.js" type="text/javascript">
+    </script>
+    <script src="js/script.js" type="text/javascript">
+    </script>
+    <title>天外天图书馆查询
+    </title>
+  </head>
+  <body>
+    <header>
+      <div class="col-md-3">
+      </div>
+      <div class="col-md-6 headview">
+      </div>
+      <div class="col-md-3">
+      </div>
+    </header>
+    <div id="app">
+      <div id="content">
+        <div class="library">
+          <div style="height:360px">
+          </div>
+          <div class="input">
+            <input class="input-box" v-on:keyup.enter="search" v-model="bookname" placeholder="请输入关键字检索">
+            <button class="button" v-on:click="search">检 索
+            </button>
+          </div> 
+        </div>
+      </div>
+      <div class="press">
+        <div id="input-box" class="input">
+          <input class="input-box" v-on:keyup.enter="search" v-model="bookname" placeholder="请输入关键字检索">  
+          <button class="button" v-on:click="search">检 索
+          </button>
+        </div>
+        <!--<p id="books" style="color:#757575;">共检索到
+          <span style="color:#e53935;">{{number}}
+          </span>本书籍-->
+        </p>
+        <div v-for="datas in data">
+          <div class="units">
+            <a href="#" v-on:click="show(datas.index, datas.title, datas.author)">
+              <img style="margin:25px;" :src="datas.cover" height="200px" width="150px" />
+            </a>
+            <div class="book-introduction">
+              <div class="bookImage">
+                <a href="#" class="book-title" v-on:click="show(datas.index, datas.title, datas.author)">
+                  <strong>&nbsp;{{datas.title}}
+                  </strong>
+                </a>
+                <br>
+                <br>
+                <br>
+              </div>
+              <div class="level">
+                <!--这里没法通过view改。。。-->
+                <img class="star_filled" src="images/star_filled.png">
+                <img src="images/star_filled.png">
+                <img src="images/star_filled.png">
+                <img src="images/star_filled.png">
+                <img class="star_blank" src="images/star_blank.png" style="width: 15px;">
+                <span>4.0分
+                </span>
+              </div>
+              <img src="images/author.png" height="21px" width="21px;">
+              <span>作者：{{datas.author}}
+              </span>
+              <br />
+              <br />
+              <img src="images/publisher.png" height="21px" width="21px">
+              <span>出版社：{{datas.publisher}}
+              </span>
+              <br />
+              <br />
+              <img src="images/time.png" height="21px" width="21px">
+              <span>时间：{{datas.year}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="background">
+          <a href="#" onclick="return view.formerPage()">上一页</a>
+          <a href="#" onclick="return view.nextPage()">下一页</a>
+        </div>
+      </div>
+      <div id="detail-text">
+        <div class="dhead">
+        </div>
+        <div class="basic-information">
+          <div class="binfo">
+          </div>
+          <div class="detail-information">
+            <div class="explain">
+              <img class="explain-img" :src="detail.cover" height="150px" width="120px">
+              <div class="detail-name">
+                <p class="detail-p">{{name}}
+                </p>
+                <p>作者
+                </p>
+                <p>出版社
+                </p>
+                <p>出版时间
+                </p>
+                <p>我来评分
+                </p>
+              </div>
+              <div class="detail-introduction">
+                <div class="level1">
+                </div>
+                <p>{{author}}&nbsp;
+                </p>
+                <p>{{detail.publisher}}&nbsp;
+                </p>
+                <p>{{detail.year}}&nbsp;
+                </p>
+                <div class="stars">
+                  <div class="starss">
+                  </div>
+                  <span>{{mark}}分
+                  </span>
+                </div>
+              </div>
+              <br>
+              <div class="introduction">
+                <span class="bookIntroduction">图书简介
+                </span>
+                <div id="summary">
+                  {{detail.summary}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="inner-information">
+          <div class="iinfo">
+          </div>
+          <div class="detail-information">
+            <div class="i-information">
+              <p>索书号
+                <span>{{detail.isbn}}
+                </span>
+              </p>
+              <p>编号
+                <span>{{holding.id}}
+                </span>
+              </p>
+              <p>位置
+                <span>{{holding.callno}}
+                </span>
+              </p>
+              <p>馆藏数量
+                <span>{{holding.stateCode}}
+                </span>
+              </p>
+              <p>在馆数量
+                <span>{{holding.libCode}}
+                </span>
+              </p>
+              <p>区域
+                <span>{{holding.local}}
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="comments">
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="tail1">
+        <!--所以说这个应该链接到哪里呢-->
+        <a href="">加入我们
+        </a> - 
+        <a href="">联系方式
+        </a> - 
+        <a href="">天 外 天
+        </a>
+        <br />
+      </div>
+      <div class="tail2">
+        Powered by TWT STUDIO &copy; 2000-2017
+      </div>
+    </footer>
+    <script type="text/javascript">
+      var viewModel = new Vue({
+        el: '#app',
+        data: {
+          data: [],
+          detail: [],
+          holding:[],
+          bookname: "",
+          page: 1,
+          number:0,
+          mark:0,
+          name:"",
+          author:"",
+        }
+        ,
+        methods: {
+          search: function() {
+            if(viewModel.bookname == "")
+              location.reload();
+            viewModel.page = 1;
+            view.stage2();
+            view.getBooksPage(viewModel.page);
+            bookNumber = 0;
+            page = 1;
+            //这里加上一个评分的API 参数得换掉
+            //view.addStars(4);
+            viewModel.number = bookNumber;
+          }
+          ,
+          show: function (index,name,author) {
+            var Index = index;
+            var Name = name;
+            var Author = author;
+            view.getBooksDetail(Index, Name, Author);
+            view.stage3();
+          }
+        }
+        ,
+      }
+                             );
+    </script>
+  </body>
+</html>

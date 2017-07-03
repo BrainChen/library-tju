@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en" xmlns="http://www.w3.org/1999/xhtml">
+        <meta charset="utf-8">
+        <title>天外天图书馆查询</title>
+        <link rel="stylesheet" href="library.css" type="text/css">
+        <script src="vue.js" type="text/javascript"></script>
+        <script src="jQuery.js" type="text/javascript"></script>
+        <script src="library-invue.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class="headset">
+            <div class="head-content">
+                <a href="#"><img src="logo1.png"/></a>
+                <!--论与icon-font的优劣-->
+                <a id="users" href=""><img src="users.png" height="20px" width="20px"/></a>
+                <!--那么这个应该链接到登录界面吧-->
+            </div>
+        </div>
+        <div id="app">
+            <div id="content">
+                <div class="library">
+                    <div style="height:434px"></div>
+                    <div class="input">
+                        <input class="input-box" v-on:keyup.enter="search" v-model="bookname" placeholder="请输入关键字检索">
+                        <button class="button" v-on:click="search">检 索</button>
+                    </div>
+                </div>
+            </div>
+            <!--这里也有个div要改-->
+            <div id="press">
+	            <div id="input-box" class="input">
+	                 <input class="input-box" v-on:keyup.enter="search" v-model="bookname" placeholder="请输入关键字检索">
+	                 <button class="button" v-on:click="search">检 索</button>
+	            </div>
+                <p id="books" style="color:#757575;">共检索到<span style="color:#e53935;">{{number}}</span>本书籍</p>
+                <div v-for="datas in data">
+                    <div class="units">
+                        <a href="#" v-on:click="show(datas.index, datas.title, datas.author)"><img style="margin:25px;" :src="datas.cover" height="200px" width="150px" /></a>
+                        <div class="book-introduction">
+                            <a href="#" class="book-title" v-on:click="show(datas.index, datas.title, datas.author)"><strong>&nbsp;{{datas.title}}</strong></a><br><br><br>
+                            <img src="author.png" height="21px" width="21px">
+                            <div class="level">
+                            	<!--我觉得这个得在API里面加上一个评分数据,这里没有噻。。。-->
+                            	<img src="star_filled.png">
+                            	<img src="star_filled.png">
+                            	<img src="star_filled.png">
+                            	<img src="star_filled.png">
+                            	<img src="star_blank.png" style="width: 15px;">
+                            	<!--那个分数是什么字体。。。-->
+                            	<span>4.0分</span>
+                            </div>
+                            <span>作者：{{datas.author}}</span><br /><br />
+                            <img src="publisher.png" height="21px" width="21px">
+                            <span>出版社：{{datas.publisher}}</span><br /><br />
+                            <img src="time.png" height="21px" width="21px">
+                            <span>时间：{{datas.year}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--那么这里有个display要改-->
+            <div style="position: absolute; z-index: -1;">
+               <img id="result-background" src="result-background.png" width="100%" height="auto">
+            </div>
+            <div id="empty-box"></div>
+	        <div id="detail-text">
+	        	<a class="former-link" href="javascript:void(0)" onclick="toFormer()"><&nbsp;&nbsp;返回上一级</a>
+	        	<a href="javascript:void(0)"><img id="flag" onclick="return changeFlag()" src="havenot.png" width="100px" height="150px"></a>
+	        	<div class="basic-information">
+	        		<img style="margin: 50px 10px -5px 30px;" src="book.png" height="25px" width="25px">
+	        		<span style="font-size: 18px; color: #9e9e9e;">基本信息</span>
+	        		<div class="detail-information">
+	        			<div class="explain">
+	        				<img style="float: left;" :src="detail.cover" height="250px" width="200px">
+	        				<div class="detail-name">
+	        					<p style="color: #444444; font-size: 20px; font-weight: 600;">{{name}}</p>
+	        					<p>作者</p>
+	        					<p>出版社</p>
+	        					<p>出版时间</p>
+	        					<p>我来评分</p>
+	        				</div>
+	        				<div class="detail-introduction">
+	        					<div style="margin:20px 0 25px 0;" class="level">
+	                            	<img src="star_filled.png">
+	                            	<img src="star_filled.png">
+	                            	<img src="star_filled.png">
+	                            	<img src="star_filled.png">
+	                            	<img src="star_blank.png" style="width: 15px;">
+	                            	<span>4.0分&nbsp;</span>
+		        				</div>
+		        				<p>{{author}}&nbsp;</p>
+		        				<p>{{detail.publisher}}&nbsp;</p>
+		        				<p>{{detail.year}}&nbsp;</p>
+		        				<div class="stars">
+		        					<a href="javascript:void(0)"><img id="star1" onclick="return submit(1)" onmouseover="return change(1)" onmouseout="return ret(1)" src="star_blank.png"></a>
+		        					<a href="javascript:void(0)"><img id="star2" onclick="return submit(2)" onmouseover="return change(2)" onmouseout="return ret(2)" src="star_blank.png"></a>
+		        					<a href="javascript:void(0)"><img id="star3" onclick="return submit(3)" onmouseover="return change(3)" onmouseout="return ret(3)" src="star_blank.png"></a>
+		        					<a href="javascript:void(0)"><img id="star4" onclick="return submit(4)" onmouseover="return change(4)" onmouseout="return ret(4)" src="star_blank.png"></a>
+		        					<a href="javascript:void(0)"><img id="star5" onclick="return submit(5)" onmouseover="return change(5)" onmouseout="return ret(5)" src="star_blank.png"></a>
+		        					<span style="margin-left: 12px; color: #e53935">{{mark}}分</span>
+		        				</div>
+	        				</div>
+	        			<br>
+	        			<div class="introduction">
+	        				<span style="color:#444444; font-size: 25px;">图书简介</span>
+	        				<div id="summary">
+	        					{{detail.summary}}
+	        				</div>
+	        			</div>
+	        		</div>
+	        	</div>
+	        </div>
+
+	        <div class="inner-information">
+	        	<img style="margin: 50px 10px -5px 30px;" src="information.png" height="25px" width="25px">
+	        	<span style="font-size: 18px; color: #9e9e9e;">在馆信息</span>
+	        	<div class="detail-information">
+	        		<div class="i-information" style="color: #686868">
+			        	<p>索书号<span>{{detail.isbn}}</span></p>
+			        	<p>编号<span>{{holding.id}}</span></p>
+			        	<p>位置<span>{{holding.callno}}</span></p>
+			        	<p>馆藏数量<span>{{holding.stateCode}}</span></p>
+			        	<p>在馆数量<span>{{holding.libCode}}</span></p>
+			        	<p>区域<span>{{holding.local}}</span></p>
+		        	</div>
+	        	</div>
+	        </div>
+
+	        <div class="comments">
+	        	<img style="margin: 50px 10px -5px 30px;" src="comments.png" height="25px" width="25px">
+	        		<span style="font-size: 18px; color: #9e9e9e;">全部书评</span>
+	        </div>
+        </div>
+
+        <div id="tailset" class="tailset">
+            <div class="tail" style="width:180px; color:#c1c1c1;">
+                <!--所以说这个应该链接到哪里呢-->
+                <a href="">加入我们</a> - <a href="">联系方式</a> - <a href="">天 外 天</a><br />
+            </div>
+            <div class="tail" style="width:230px;">
+                <div style="color:#c1c1c1;">Powered by TWT STUDIO &copy; 2000-2016</div>
+            </div>
+        </div>
+        <script>
+            var vum = new Vue({
+                el: "#app",
+                data: {
+                    data: [],
+                    detail: [],
+                    holding:[],
+                    bookname: "",
+                    number:0,
+                    mark:0,
+                    name:"",
+                    author:"",
+                },
+                methods: {
+                    search: function () {
+                        $.ajax({
+                            type: 'get',
+                            url: "http://open.twtstudio.com/api/v1/library/book?title=" + this.bookname,
+                            datatype: 'json',
+                            success: function (json) {
+                                var re = json.data.data;
+                                vum.data = re;
+                                vum.number = json.data.data.length;
+                                for(var k = 0; k < vum.number; k++){
+                                	if(vum.data[k].author.length <= 12)vum.data[k].author = vum.data[k].author;
+		                    		else{
+			                    		var subname = "";
+			                    		for(var i = 0; i < 12; i++){
+			                    			subname += vum.data[k].author[i];
+			                    		}
+			                    		vum.data[k].author = subname+"...";
+		                    		}
+                                }
+                            }
+                        })
+                        document.getElementById('result-background').style.margin = "-350px auto 0 auto";
+                        document.getElementById('tailset').style.backgroundColor = "#3f2f2e";
+                        document.getElementById('books').style.display = "block";
+                        document.getElementById('result-background').style.display = "block";
+                        document.getElementById('empty-box').style.display = "block";
+                        document.getElementById('content').style.display = "none";
+                        document.getElementById('input-box').style.display = "block";
+                    },
+                    show: function (index,name,author) {
+                    	if(name.length <= 8)vum.name = name;
+                    	else{
+                    		var subname = "";
+                    		for(var i = 0; i < 8; i++){
+                    			subname += name[i];
+                    		}
+                    		vum.name = subname+"...";
+                    	}
+                    	vum.author = author;
+                        $.ajax({
+                            type: 'get',
+                            url: "http://open.twtstudio.com/api/v1/library/book/" + index,
+                            datatype: 'json',
+                            success: function (json) {
+                                var er = json.data.data;
+                                vum.detail = er;
+                                vum.holding = er.holding[0];
+                            }
+                        })
+                        document.getElementById('detail-text').style.display = "block";
+                        document.getElementById('press').style.display = "none";
+                        document.getElementById('result-background').style.display = "none";
+                        document.getElementById('empty-box').style.display = "none";
+                        document.getElementById('input-box').style.display = "none";
+                    }
+                }
+            })
+        </script>
+    </body>
+</html>
